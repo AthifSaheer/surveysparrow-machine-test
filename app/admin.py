@@ -1,3 +1,6 @@
 from django.contrib import admin
+from . import models
 
-# Register your models here.
+@admin.register(models.URL)
+class URLAdmin(admin.ModelAdmin):
+    list_display = ("url", "interval", "user", "active")

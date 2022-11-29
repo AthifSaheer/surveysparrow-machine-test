@@ -1,0 +1,28 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %} Login {% endblock title %}
+        
+{% block content %}
+
+    <h1 class="text-center m-4">Login</h1>
+    <p class="text-center" style="color: red; font-size: 20px; font-weight: bold">{{ error }}</p>
+    <p class="text-center" style="color: green; font-size: 20px; font-weight: bold">{{ success }}</p>
+    
+    
+    <form method="post" class="m-4">
+        {% csrf_token %}
+        
+        <label>Username</label>
+        <input required name="username" type="text">
+        <br>
+
+        <label>Password</label>
+        <input required name="password" type="password">
+        <br>
+        
+        <button class="btn btn-primary">submit</button>
+    </form>
+    <a href="{% url 'register' %}" class="text-primary m-4">Create a new account</a>
+
+{% endblock %}

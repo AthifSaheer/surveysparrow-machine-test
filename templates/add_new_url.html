@@ -1,0 +1,32 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %} Add new URL page {% endblock title %}
+        
+{% block content %}
+
+    <h1 class="text-center m-4">Add new URL</h1>
+
+    <a href="{% url 'home' %}">
+        <button class="btn btn-success mx-2">
+            Go back
+        </button>
+    </a>
+
+    <form method="post" class="m-4">
+        {% csrf_token %}
+        
+        <label>URL</label>
+        <input required name="url" type="text">
+        <br>
+
+        <label>Interval</label>
+        <input required name="interval" type="number">
+        <br>
+        <label class="text-muted">Type interval by time you want. eg: you want 1 min then type 1</label>
+        <br>
+        
+        <button class="btn btn-primary">submit</button>
+    </form>
+
+{% endblock %}

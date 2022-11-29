@@ -1,0 +1,109 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %} Home page {% endblock title %}
+        
+{% block content %}
+
+    <h1 class="text-center m-4">Home</h1>
+    {% if request != 'AnonymousUser' %}
+        <a href="{% url 'logout' %}">
+            <button class="btn btn-danger mx-2">
+                Logout
+            </button>
+        </a>
+    {% endif %}
+
+    <a href="{% url 'add_new_url' %}">
+        <button class="btn btn-success mx-2">
+            Add new URL
+        </button>
+    </a>
+
+    <!-- <div class="mx-5 my-3">
+        <table class="table table-striped">
+            <thead>
+                <tr >
+                    <th scope="col">#</th>
+                    <th scope="col">URLs</th>
+                    <th scope="col">Uploaded at</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td style="width: 20%;">
+                        <button class="btn btn-info btn-xs m-1">Edit</button>
+                        <button class="btn btn-danger btn-xs m-1">Delete</button>
+                    </td>
+            </tbody>
+        </table>
+    </div> -->
+
+    <style>
+        .main-div {
+            background-color: #c4fae9;
+            width: 100%;
+            padding: 20px;
+        }
+        .buttons {
+            justify-content: space-evenly;
+            width: 100%;
+            display: flex;
+        }
+        .url-div {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .box {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+            width: 32%;
+            text-align: center;
+        }
+    </style>
+
+    <div class="main-div">
+        <div class="buttons">
+            <button class="btn btn-light m-2">All URLs</button>
+            <button class="btn btn-light m-2">Active URLs</button>
+            <button class="btn btn-light m-2">Deleted URLs</button>
+        </div>
+        <hr>
+        <div class="url-div">
+
+            {% if urls == 'nodata' %}
+                <p class="text-danger">URLs not found!</p>
+            {% else %}
+                {% for url in urls %}
+                    <div class="box">
+                        <p>
+                            <b>{{ url.url }}</b>
+                        </p>
+                        <p>Interval: <span class="text-secondary">{{ url.interval }}m</span></p>
+                        <p>Created at: <span class="text-secondary">{{ url.created_at }}</span></p>
+
+                        <a href="{% url 'edit_url' url.id %}">
+                            <button class="btn btn-outline-info">edit</button>
+                        </a>
+                        
+                        <a href="{% url 'delete_url' url.id %}">
+                            <button class="btn btn-outline-danger">delete</button>
+                        </a>
+                        
+                        <a href="{% url 'monitor_url' url.id %}">
+                            <button class="btn btn-outline-primary">monitor</button>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

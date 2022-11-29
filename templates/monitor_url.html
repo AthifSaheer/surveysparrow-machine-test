@@ -1,0 +1,98 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %} Monitor page {% endblock title %}
+        
+{% block content %}
+    <style>
+        .monitor-div {
+            margin: 0 auto;
+            width: 50%;
+            padding: 10px;
+            background-color: rgb(175, 245, 245);
+        }
+    </style>
+    <h1 class="text-center m-4">Monitor</h1>
+
+    <a href="{% url 'home' %}">
+        <button class="btn btn-success mx-2">
+            Go back
+        </button>
+    </a>
+
+    <div class="mx-5 my-3 monitor-div">
+        <h4>
+            <b>{{ url.url }}</b>
+        </h4>
+
+        <div id="error"></div>
+        
+        <button onclick="NewFun()">click</button>
+        
+        <div id="server-status"></div>
+        <p class="text-bg-">
+            <span class="text-danger">Nov. 29, 2022, 4:39 p.m.</span>
+            <span class="text-danger">Down</span>
+        </p>
+        <p class="text-bg-">
+            <span class="text-success">Nov. 29, 2022, 4:39 p.m.</span>
+            <span class="text-success">UP</span>
+        </p>
+        <p class="text-bg-">
+            <span>Nov. 29, 2022, 4:39 p.m.</span>
+            <span class="text-success">UP</span>
+        </p>
+    </div>
+
+    <script>
+        function NewFun() {
+            $.ajax({
+                url : "{% url 'monitor_url' url.id %}",
+                method : 'POST',
+                data : {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    url_id: "{{ url.id }}",
+                },
+                dataType: "json",
+                success : function(data){
+                    var date = new Date();
+                    var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
+                    var hour = tConvert(`${date.getHours()}:00`)
+                    var current_time = hour +":"+date.getMinutes()+":"+ date.getSeconds();
+                    var date_time = current_date + " " + current_time
+
+                    if (data.error) {
+                        document.getElementById("error").innerHTML = ''
+                        var p = document.createElement("p")
+                        p.classList.add("text-danger");
+                        p.innerHTML = "Invalid URL"
+                        document.getElementById("error").appendChild(p);
+                    } else if (data.server == 'up') {
+                        var p = document.createElement("p")
+                        p.classList.add("text-success");
+                        p.innerText = `${date_time} UP`
+                        document.getElementById("server-status").appendChild(p)
+                    } else if (data.server == 'down') {
+                        var p = document.createElement("p")
+                        p.classList.add("text-danger");
+                        p.innerText = `${date_time} Down`
+                        document.getElementById("server-status").appendChild(p)
+                    }
+                },
+            })
+        }
+
+        function tConvert(time) {
+            // Check correct time format and split into components
+            time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+            if (time.length > 1) { // If time format correct
+            time = time.slice(1); // Remove full string match value
+            time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+            time[0] = +time[0] % 12 || 12; // Adjust hours
+            }
+            return time.join(''); // return adjusted time or original string
+        }
+    </script>
+
+{% endblock %}
