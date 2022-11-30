@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-h^7grz3745chllrd(k=k92h!7*&sqpm6he91d)ey@aq0dz1o%x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -97,7 +97,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static') # static files will be stored after using collecstatic command
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/') # static files will be stored after using collecstatic command
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')] # django searching additional static files here
 
 # Default primary key field type
