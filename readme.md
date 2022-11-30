@@ -6,7 +6,7 @@
 
 * Backend - `Python Django`
 * Frontend - `HTML` `CSS` `Js` `Bootstrap` `Ajax`
-* Database - `SQLite3`
+* Database - `PostgreSQL`
 
 <!-- GETTING STARTED -->
 ## Getting Started
