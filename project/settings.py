@@ -97,6 +97,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # static files will be stored after using collecstatic command
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')] # django searching additional static files here
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

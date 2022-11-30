@@ -107,16 +107,24 @@ def monitor_url(request, url_id):
         
     if request.method == 'POST':
         url = URL.objects.get(id=url_id)
+        error_msg = ''
+        code = 0
+
         try:
             code = urllib.request.urlopen(url.url).getcode()
-        except:
-            code = 0
+        except urllib.error.HTTPError:
+            error_msg = "Return 403: Forbidden!"
+        except urllib.error.URLError:
+            error_msg = "URL or service not known"
+        else:
+            error_msg = "Something went wrong!"
 
         data = {}
         if code == 200:
             data["server"] = "up"
-        elif code == 0:
-            data["error"] = "Invalid url"
+        elif error_msg != '':
+            data["error"] = error_msg
         else:
             data["server"] = "down"
+            
         return JsonResponse(data)

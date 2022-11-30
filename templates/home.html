@@ -4,106 +4,201 @@
 {% block title %} Home page {% endblock title %}
         
 {% block content %}
-
-    <h1 class="text-center m-4">Home</h1>
-    {% if request != 'AnonymousUser' %}
-        <a href="{% url 'logout' %}">
-            <button class="btn btn-danger mx-2">
-                Logout
-            </button>
-        </a>
-    {% endif %}
-
-    <a href="{% url 'add_new_url' %}">
-        <button class="btn btn-success mx-2">
-            Add new URL
-        </button>
-    </a>
-
-    <!-- <div class="mx-5 my-3">
-        <table class="table table-striped">
-            <thead>
-                <tr >
-                    <th scope="col">#</th>
-                    <th scope="col">URLs</th>
-                    <th scope="col">Uploaded at</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td style="width: 20%;">
-                        <button class="btn btn-info btn-xs m-1">Edit</button>
-                        <button class="btn btn-danger btn-xs m-1">Delete</button>
-                    </td>
-            </tbody>
-        </table>
-    </div> -->
-
     <style>
-        .main-div {
-            background-color: #c4fae9;
-            width: 100%;
-            padding: 20px;
-        }
-        .buttons {
-            justify-content: space-evenly;
-            width: 100%;
-            display: flex;
-        }
-        .url-div {
-            display: flex;
-            width: 100%;
-            flex-wrap: wrap;
-        }
         .box {
-            background-color: #fff;
-            padding: 20px;
-            margin: 10px;
             box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-            width: 32%;
-            text-align: center;
+            justify-content: space-around;
+            width: 30%;
+        }
+        @media only screen and (max-width: 1000px) {
+            .box {
+                width: 70%;
+            }
+        }
+        @media only screen and (max-width: 768px) {
+            .box {
+                width: 100%;
+            }
         }
     </style>
 
-    <div class="main-div">
-        <div class="buttons">
-            <button class="btn btn-light m-2">All URLs</button>
-            <button class="btn btn-light m-2">Active URLs</button>
-            <button class="btn btn-light m-2">Deleted URLs</button>
+    <h1 class="text-center m-4">Home</h1>
+
+    <div class="d-flex justify-content-end m-2">
+        <a href="{% url 'add_new_url' %}">
+            <button class="btn btn-success mx-2">
+                Add new URL
+            </button>
+        </a>
+    
+        {% if request != 'AnonymousUser' %}
+            <a href="{% url 'logout' %}">
+                <button class="btn btn-danger mx-2">
+                    Logout
+                </button>
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="bg-info w-100 p-3">
+        <div class="justify-content-evenly w-100 d-flex">
+            <button class="btn btn-light m-2" id="btn-all-urls" onclick="showAllURLs()">All URLs</button>
+            <button class="btn btn-light m-2" id="btn-active-urls" onclick="showActiveURLs()">Active URLs</button>
+            <button class="btn btn-light m-2" id="btn-deleted-urls" onclick="showDeletedURLs()">Deleted URLs</button>
         </div>
         <hr>
-        <div class="url-div">
 
+        <div class="d-flex w-100 flex-wrap" id="all-url-div">
             {% if urls == 'nodata' %}
                 <p class="text-danger">URLs not found!</p>
             {% else %}
                 {% for url in urls %}
-                    <div class="box">
-                        <p>
+                    <div class="bg-light p-3 m-2 text-center rounded border border-secondary box">
+                        <p style="word-wrap: break-word;">
                             <b>{{ url.url }}</b>
                         </p>
                         <p>Interval: <span class="text-secondary">{{ url.interval }}m</span></p>
                         <p>Created at: <span class="text-secondary">{{ url.created_at }}</span></p>
 
-                        <a href="{% url 'edit_url' url.id %}">
-                            <button class="btn btn-outline-info">edit</button>
-                        </a>
-                        
-                        <a href="{% url 'delete_url' url.id %}">
-                            <button class="btn btn-outline-danger">delete</button>
-                        </a>
-                        
-                        <a href="{% url 'monitor_url' url.id %}">
-                            <button class="btn btn-outline-primary">monitor</button>
-                        </a>
+                        <div class="action-btns d-flex justify-content-around flex-wrap">
+                            <a href="{% url 'edit_url' url.id %}">
+                                <button class="btn btn-outline-info">edit</button>
+                            </a>
+                            
+                            <a href="{% url 'delete_url' url.id %}">
+                                <button class="btn btn-outline-danger">delete</button>
+                            </a>
+                            
+                            <a href="{% url 'monitor_url' url.id %}">
+                                <button class="btn btn-outline-primary">monitor</button>
+                            </a>
+                        </div>
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
+
+        <div class="d-flex w-100 flex-wrap" id="active-url-div">
+            {% if urls == 'nodata' %}
+                <p class="text-danger">URLs not found!</p>
+            {% else %}
+                {% for url in urls %}
+                    <div class="bg-light p-3 m-2 text-center rounded border border-secondary box">
+                        <p style="word-wrap: break-word;">
+                            <b>{{ url.url }}</b>
+                        </p>
+                        <p>Interval: <span class="text-secondary">{{ url.interval }}m</span></p>
+                        <p>Created at: <span class="text-secondary">{{ url.created_at }}</span></p>
+
+                        <div class="action-btns d-flex justify-content-around flex-wrap">
+                            <a href="{% url 'edit_url' url.id %}">
+                                <button class="btn btn-outline-info">edit</button>
+                            </a>
+                            
+                            <a href="{% url 'delete_url' url.id %}">
+                                <button class="btn btn-outline-danger">delete</button>
+                            </a>
+                            
+                            <a href="{% url 'monitor_url' url.id %}">
+                                <button class="btn btn-outline-primary">monitor</button>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="d-flex w-100 flex-wrap" id="deleted-url-div">
+            {% if urls == 'nodata' %}
+                <p class="text-danger">URLs not found!</p>
+            {% else %}
+                {% for url in urls %}
+                    <div class="bg-light p-3 m-2 text-center rounded border border-secondary box">
+                        <p style="word-wrap: break-word;">
+                            <b>{{ url.url }}</b>
+                        </p>
+                        <p>Interval: <span class="text-secondary">{{ url.interval }}m</span></p>
+                        <p>Created at: <span class="text-secondary">{{ url.created_at }}</span></p>
+
+                        <div class="action-btns d-flex justify-content-around flex-wrap">
+                            <a href="{% url 'edit_url' url.id %}">
+                                <button class="btn btn-outline-info">edit</button>
+                            </a>
+                            
+                            <a href="{% url 'delete_url' url.id %}">
+                                <button class="btn btn-outline-danger">delete</button>
+                            </a>
+                            
+                            <a href="{% url 'monitor_url' url.id %}">
+                                <button class="btn btn-outline-primary">monitor</button>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
     </div>
+
+    <script>
+        // Divs
+        var divAllUrl = document.getElementById("all-url-div")
+        var divActiveUrl = document.getElementById("active-url-div")
+        var divDeletedUrl = document.getElementById("deleted-url-div")
+        divActiveUrl.classList.add("d-none")
+        divDeletedUrl.classList.add("d-none")
+
+        // Buttons
+        var btnAllUrl = document.getElementById("btn-all-urls")
+        var btnActiveUrl = document.getElementById("btn-active-urls")
+        var btnDeletedUrl = document.getElementById("btn-deleted-urls")
+        btnAllUrl.classList.remove("btn-light")
+        btnAllUrl.classList.add("btn-dark")
+
+        function showAllURLs() {
+            divAllUrl.classList.remove("d-none")
+            divAllUrl.classList.add("d-block")
+            divDeletedUrl.classList.add("d-none")
+            divActiveUrl.classList.add("d-none")
+
+            btnAllUrl.classList.remove("btn-light")
+            btnAllUrl.classList.add("btn-dark")
+
+            btnDeletedUrl.classList.add("btn-light")
+            btnDeletedUrl.classList.remove("btn-dark")
+            btnActiveUrl.classList.add("btn-light")
+            btnActiveUrl.classList.remove("btn-dark")
+        }
+
+        function showActiveURLs() {
+            divAllUrl.classList.add("d-none")
+            divActiveUrl.classList.remove("d-none")
+            divActiveUrl.classList.add("d-block")
+            divDeletedUrl.classList.add("d-none")
+
+            btnActiveUrl.classList.remove("btn-light")
+            btnActiveUrl.classList.add("btn-dark")
+
+            btnAllUrl.classList.add("btn-light")
+            btnAllUrl.classList.remove("btn-dark")
+            btnDeletedUrl.classList.add("btn-light")
+            btnDeletedUrl.classList.remove("btn-dark")
+        }
+
+        function showDeletedURLs() {
+            divDeletedUrl.classList.remove("d-none")
+            divDeletedUrl.classList.add("d-block")
+            divAllUrl.classList.add("d-none")
+            divActiveUrl.classList.add("d-none")
+
+            btnDeletedUrl.classList.remove("btn-light")
+            btnDeletedUrl.classList.add("btn-dark")
+
+            btnAllUrl.classList.add("btn-light")
+            btnAllUrl.classList.remove("btn-dark")
+            btnActiveUrl.classList.add("btn-light")
+            btnActiveUrl.classList.remove("btn-dark")
+        }
+    </script>
 
 {% endblock %}

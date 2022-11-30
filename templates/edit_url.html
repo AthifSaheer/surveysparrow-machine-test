@@ -1,5 +1,4 @@
 {% extends './base.html' %}
-{% load static %}
 
 {% block title %} Edit URL page {% endblock title %}
         
@@ -7,26 +6,35 @@
 
     <h1 class="text-center m-4">Edit URL</h1>
 
-    <a href="{% url 'home' %}">
-        <button class="btn btn-success mx-2">
-            Go back
-        </button>
-    </a>
+    <div class="d-flex justify-content-around p-1">
+        <div class="bg-light rounded border border-secondary">
+            <form method="post" class="m-4">
+                {% csrf_token %}
 
-    <form method="post" class="m-4">
-        {% csrf_token %}
-        
-        <label>URL</label>
-        <input required name="url" type="text" value="{{ url.url }}">
-        <br>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input class="form-control" type="text" required name="url" value="{{ url.url }}">
+                </div>
 
-        <label>Interval</label>
-        <input required name="interval" type="number" value="{{ url.interval }}">
-        <br>
-        <label class="text-muted">Type interval by time you want. eg: you want 1 min then type 1</label>
-        <br>
-        
-        <button class="btn btn-primary">submit</button>
-    </form>
+                <div class="form-group">
+                    <label>Interval</label>
+                    <input class="form-control" type="number" required name="interval" value="{{ url.interval }}">
+                    <label class="text-muted">Type interval by time you want. eg: you want 1 min then type 1</label>
+                </div>
+
+                <br>
+
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-primary btn-block w-100">submit</button>
+                </div>
+            </form>
+
+            <div class="text-center">
+                <a href="{% url 'home' %}" class="text-dark">
+                    Go back
+                </a>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

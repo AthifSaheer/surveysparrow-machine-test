@@ -4,48 +4,49 @@
 {% block title %} Monitor page {% endblock title %}
         
 {% block content %}
-    <style>
-        .monitor-div {
-            margin: 0 auto;
-            width: 50%;
-            padding: 10px;
-            background-color: rgb(175, 245, 245);
-        }
-    </style>
     <h1 class="text-center m-4">Monitor</h1>
 
-    <a href="{% url 'home' %}">
-        <button class="btn btn-success mx-2">
-            Go back
-        </button>
-    </a>
+    <div class="d-flex justify-content-around p-1">
+        <div class="bg-light rounded border border-secondary">
+            <div class="p-4">
+                <div class="py-2">
+                    <a href="{% url 'home' %}" class="text-primary">
+                        Go back
+                    </a>
+                </div>
 
-    <div class="mx-5 my-3 monitor-div">
-        <h4>
-            <b>{{ url.url }}</b>
-        </h4>
-
-        <div id="error"></div>
+                <h4>
+                    <b>{{ url.url }}</b>
+                </h4>
         
-        <button onclick="NewFun()">click</button>
+                <p id="second-couter" class="text-secondary"></p>
         
-        <div id="server-status"></div>
-        <p class="text-bg-">
-            <span class="text-danger">Nov. 29, 2022, 4:39 p.m.</span>
-            <span class="text-danger">Down</span>
-        </p>
-        <p class="text-bg-">
-            <span class="text-success">Nov. 29, 2022, 4:39 p.m.</span>
-            <span class="text-success">UP</span>
-        </p>
-        <p class="text-bg-">
-            <span>Nov. 29, 2022, 4:39 p.m.</span>
-            <span class="text-success">UP</span>
-        </p>
+                <div id="error"></div>
+                
+                <div id="server-status"></div>
+            </div>
+        </div>
     </div>
+    
 
     <script>
-        function NewFun() {
+        window.addEventListener("load", (event) => {
+            fetchServerStatus()
+        });
+
+        function couterFunc() {
+            var timeleft = "{{ url.interval }}" * 60;
+            var downloadTimer = setInterval(function(){
+              if(timeleft <= 0){
+                clearInterval(downloadTimer);
+                fetchServerStatus()
+              }
+              document.getElementById("second-couter").innerHTML = `Only ${timeleft} secs left to fetch new response`;
+              timeleft -= 1;
+            }, 1000);
+        }
+
+        function fetchServerStatus() {
             $.ajax({
                 url : "{% url 'monitor_url' url.id %}",
                 method : 'POST',
@@ -58,25 +59,27 @@
                     var date = new Date();
                     var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
                     var hour = tConvert(`${date.getHours()}:00`)
-                    var current_time = hour +":"+date.getMinutes()+":"+ date.getSeconds();
+                    var current_time = hour +" :"+date.getMinutes()+"m :"+ date.getSeconds()+"s";
                     var date_time = current_date + " " + current_time
 
                     if (data.error) {
                         document.getElementById("error").innerHTML = ''
                         var p = document.createElement("p")
                         p.classList.add("text-danger");
-                        p.innerHTML = "Invalid URL"
+                        p.innerHTML = data.error
                         document.getElementById("error").appendChild(p);
                     } else if (data.server == 'up') {
                         var p = document.createElement("p")
                         p.classList.add("text-success");
-                        p.innerText = `${date_time} UP`
+                        p.innerText = `${date_time} - UP`
                         document.getElementById("server-status").appendChild(p)
+                        couterFunc()
                     } else if (data.server == 'down') {
                         var p = document.createElement("p")
                         p.classList.add("text-danger");
-                        p.innerText = `${date_time} Down`
+                        p.innerText = `${date_time} - Down`
                         document.getElementById("server-status").appendChild(p)
+                        couterFunc()
                     }
                 },
             })
