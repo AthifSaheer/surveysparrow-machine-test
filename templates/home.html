@@ -60,29 +60,33 @@
                         <p>Interval: <span class="text-secondary">{{ url.interval }}m</span></p>
                         <p>Created at: <span class="text-secondary">{{ url.created_at }}</span></p>
 
-                        <div class="action-btns d-flex justify-content-around flex-wrap">
-                            <a href="{% url 'edit_url' url.id %}">
-                                <button class="btn btn-outline-info">edit</button>
-                            </a>
-                            
-                            <a href="{% url 'delete_url' url.id %}">
-                                <button class="btn btn-outline-danger">delete</button>
-                            </a>
-                            
-                            <a href="{% url 'monitor_url' url.id %}">
-                                <button class="btn btn-outline-primary">monitor</button>
-                            </a>
-                        </div>
+                        {% if url.active %}
+                            <div class="action-btns d-flex justify-content-around flex-wrap">
+                                <a href="{% url 'edit_url' url.id %}">
+                                    <button class="btn btn-outline-info">edit</button>
+                                </a>
+                                
+                                <a href="{% url 'delete_url' url.id %}">
+                                    <button class="btn btn-outline-danger">delete</button>
+                                </a>
+                                
+                                <a href="{% url 'monitor_url' url.id %}">
+                                    <button class="btn btn-outline-primary">monitor</button>
+                                </a>
+                            </div>
+                        {% else %}
+                            <p class="text-danger">This URL deleted!</p>
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
 
         <div class="d-flex w-100 flex-wrap" id="active-url-div">
-            {% if urls == 'nodata' %}
-                <p class="text-danger">URLs not found!</p>
+            {% if active_urls == 'nodata' %}
+                <p class="text-danger">Not found active URLs!</p>
             {% else %}
-                {% for url in urls %}
+                {% for url in active_urls %}
                     <div class="bg-light p-3 m-2 text-center rounded border border-secondary box">
                         <p style="word-wrap: break-word;">
                             <b>{{ url.url }}</b>
@@ -109,30 +113,16 @@
         </div>
 
         <div class="d-flex w-100 flex-wrap" id="deleted-url-div">
-            {% if urls == 'nodata' %}
-                <p class="text-danger">URLs not found!</p>
+            {% if deleted_urls == 'nodata' %}
+                <p class="text-danger">Not found deleted URLs!</p>
             {% else %}
-                {% for url in urls %}
+                {% for url in deleted_urls %}
                     <div class="bg-light p-3 m-2 text-center rounded border border-secondary box">
                         <p style="word-wrap: break-word;">
                             <b>{{ url.url }}</b>
                         </p>
                         <p>Interval: <span class="text-secondary">{{ url.interval }}m</span></p>
                         <p>Created at: <span class="text-secondary">{{ url.created_at }}</span></p>
-
-                        <div class="action-btns d-flex justify-content-around flex-wrap">
-                            <a href="{% url 'edit_url' url.id %}">
-                                <button class="btn btn-outline-info">edit</button>
-                            </a>
-                            
-                            <a href="{% url 'delete_url' url.id %}">
-                                <button class="btn btn-outline-danger">delete</button>
-                            </a>
-                            
-                            <a href="{% url 'monitor_url' url.id %}">
-                                <button class="btn btn-outline-primary">monitor</button>
-                            </a>
-                        </div>
                     </div>
                 {% endfor %}
             {% endif %}

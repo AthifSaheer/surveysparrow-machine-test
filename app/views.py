@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import URL
 from django.http import JsonResponse
+from .models import URL
 import urllib.request
 
 def register(request):
@@ -53,9 +53,14 @@ def home(request):
         if not request.user.is_authenticated:
             return redirect('login')
         
-        urls = URL.objects.filter(user=request.user, active=True)
+        all_urls = URL.objects.filter(user=request.user).order_by('-id')
+        active_urls = URL.objects.filter(user=request.user, active=True).order_by('-id')
+        deleted_urls = URL.objects.filter(user=request.user, active=False).order_by('-id')
+
         context = {
-            'urls': urls if urls else 'nodata'
+            'urls': all_urls if all_urls else 'nodata',
+            'active_urls': active_urls if active_urls else 'nodata',
+            'deleted_urls': deleted_urls if deleted_urls else 'nodata',
         }
         return render(request, 'home.html', context)
 
@@ -109,9 +114,16 @@ def monitor_url(request, url_id):
         url = URL.objects.get(id=url_id)
         error_msg = ''
         code = 0
+        new_url = ''
+
+        if "https://" not in url.url:
+            new_url = f"https://www.{url.url}/"
 
         try:
-            code = urllib.request.urlopen(url.url).getcode()
+            if new_url == '':
+                code = urllib.request.urlopen(url.url).getcode()
+            else:
+                code = urllib.request.urlopen(new_url).getcode()
         except urllib.error.HTTPError:
             error_msg = "Return 403: Forbidden!"
         except urllib.error.URLError:
@@ -126,5 +138,5 @@ def monitor_url(request, url_id):
             data["error"] = error_msg
         else:
             data["server"] = "down"
-            
+
         return JsonResponse(data)
