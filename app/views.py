@@ -15,9 +15,13 @@ def register(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         password = request.POST.get('password')
+        c_password = request.POST.get('c_password')
 
         if not name or not password:
             return render(request, 'register.html', {'error': 'Username & password are required!'})
+
+        if password != c_password:
+            return render(request, 'register.html', {'error': 'Password did not match!'})
 
         if User.objects.filter(username=name):
             return render(request, 'register.html', {'error': 'User already exists!'})

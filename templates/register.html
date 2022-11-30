@@ -1,34 +1,45 @@
 {% extends './base.html' %}
-{% load static %}
 
 {% block title %} Register {% endblock title %}
         
 {% block content %}
+
     <h1 class="text-center m-4">Register</h1>
     <p class="text-center" style="color: red; font-size: 20px; font-weight: bold">{{ error }}</p>
-    
-    {% if success %}
-        <p class="text-center" style="color: green; font-size: 20px; font-weight: bold">{{ success }}</p>
-        <a class="text-center" href="{% url 'login' %}" style="margin-bottom: 10px;">
-            Click here to login
-        </a>
-        <br>
-    {% endif %}
-    
-    <form method="post" class="m-4">
-        {% csrf_token %}
 
-        <label>Name</label>
-        <input name="name" type="text">
-        <br>
-        
-        <label>Password</label>
-        <input required name="password" type="password">
-        <br>
+    <div class="d-flex justify-content-around p-1">
+        <div class="bg-light rounded border border-secondary">
+            <form method="post" class="m-4">
+                {% csrf_token %}
 
-        <button class="btn btn-primary">submit</button>
-    </form>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input class="form-control" type="text" required name="name">
+                </div>
 
-    <a href="{% url 'login' %}" class="text-primary m-4">already have an account</a>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input class="form-control" type="password" required name="password">
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm password</label>
+                    <input class="form-control" type="password" required name="c_password">
+                </div>
+
+                <br>
+
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-primary btn-block w-100">submit</button>
+                </div>
+            </form>
+
+            <div class="text-center">
+                <a href="{% url 'login' %}" class="text-dark">
+                    Already have an account
+                </a>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
